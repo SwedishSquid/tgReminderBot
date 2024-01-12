@@ -46,7 +46,7 @@ public class Program
 
             if (message.Text.Split(' ')[0].ToLower() == "/echo")
             {
-                var textToSend = message.Text.Substring(5);
+                var textToSend = message.Text[5..];
                 if (textToSend == "")
                 {
                     textToSend = "empty";
