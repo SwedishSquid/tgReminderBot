@@ -24,4 +24,9 @@ public static class DataBaseHandler
         var currentTime = DateTime.Now;
         return records.MinBy(record => record.TimeToRemind - currentTime);
     }
+
+    public static void RemoveRecord(Record record)
+    {
+        records.Remove(record);
+    }
 }
