@@ -7,10 +7,9 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 
 
-namespace Domain
+namespace Domain;
+
+public interface IMessageHandler
 {
-    public interface IMessageHandler
-    {
-        public bool TryHandleMessage(Message message, ITelegramBotClient bot);
-    }
+    public bool TryHandleMessage(Message message, ITelegramBotClient bot);
 }
