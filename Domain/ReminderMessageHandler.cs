@@ -12,20 +12,22 @@ namespace Domain;
 
 public class ReminderMessageHandler : IMessageHandler
 {
-    private static readonly Regex match_re = new(@"^(\w+) (\.+)");
+    private static readonly Regex matchRe = new(@"^(\w+)\s+(.+)");
     public bool TryHandleMessage(Message message, ITelegramBotClient bot)
     {
         var text = message.Text.Trim();
-        var matchObj = match_re.Match(text);
+        var matchObj = matchRe.Match(text);
         if (!matchObj.Success)
             return false;
 
-        if (DateTime.TryParse(matchObj.Groups[0].Value, out var date))
+        var strDate = matchObj.Groups[1].Value;
+
+        if (DateTime.TryParse(strDate, out var date))
         {
             //if (date < DateTime.Now) 
             //    return false;
-
-            DataBaseHandler.AddRecord(message.Chat, date, text);
+            var reminderText = matchObj.Groups[2].Value;
+            DataBaseHandler.AddRecord(message.Chat, date, reminderText);
             SendSuccessMessageToClient(message.Chat, bot).Wait();
             return true;
         }
