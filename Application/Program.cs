@@ -10,6 +10,6 @@ class Program
 
     public static void Main()
     {
-        new MainBot(new TelegramBotClient(Secret.GetToken()), new IMessageHandler[0]).Run(true);
+        new MainBot(new TelegramBotClient(Secret.GetToken()), new List<IMessageHandler>() { new ReminderMessageHandler(), new DefaultMessageHandler() }).Run(true);
     }
 }

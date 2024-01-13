@@ -56,6 +56,7 @@ public class MainBot
         if (record == null) return;
 
         await botClient.SendTextMessageAsync(new ChatId(record.Chat.Id), record.Message);
+        DataBaseHandler.RemoveRecord(record);
     }
 
     public void Run(bool forever = false)
