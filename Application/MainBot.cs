@@ -55,7 +55,13 @@ public class MainBot
         var record = DataBaseHandler.FindClosestRecord();
         if (record == null) return;
 
-        await botClient.SendTextMessageAsync(new ChatId(record.Chat.Id), record.Message);
+
+        if ((record.Reminder.TimeToRemind - DateTime.Now).TotalSeconds > 1)
+        {
+            return;
+        }
+
+        await botClient.SendTextMessageAsync(new ChatId(record.Chat.Id), record.Reminder.text);
         DataBaseHandler.RemoveRecord(record);
     }
 
