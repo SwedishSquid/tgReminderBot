@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
-
 
 namespace Infrastructure;
 
-public record Record(Chat Chat, Reminder Reminder);
+public record Reminder(DateTime TimeToRemind = default, string text = "");

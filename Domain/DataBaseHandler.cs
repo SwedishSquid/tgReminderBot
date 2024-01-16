@@ -12,9 +12,9 @@ public static class DataBaseHandler
 {
     private static readonly List<Record> records = new List<Record>();
 
-    public static void AddRecord(Chat chat, DateTime timeToRemind, string message)
+    public static void AddRecord(Chat chat, Reminder reminder)
     {
-        records.Add(new Record(chat, timeToRemind, message));
+        records.Add(new Record(chat, reminder));
     }
 
     public static Record? FindClosestRecord()
@@ -22,7 +22,7 @@ public static class DataBaseHandler
         if (records.Count == 0)
             return null;
         var currentTime = DateTime.Now;
-        return records.MinBy(record => record.TimeToRemind - currentTime);
+        return records.MinBy(record => record.Reminder.TimeToRemind - currentTime);
     }
 
     public static void RemoveRecord(Record record)

@@ -16,7 +16,7 @@ public class DefaultMessageHandler : IMessageHandler
         return true;
     }
 
-    private async Task SendMessageToClient(Chat chat, ITelegramBotClient client)
+    private static async Task SendMessageToClient(Chat chat, ITelegramBotClient client)
     {
         await client.SendTextMessageAsync(chat, "Incorrect format");
     }
