@@ -16,11 +16,13 @@ public class MainBot
 {
     private readonly ITelegramBotClient bot;
     private readonly List<IMessageHandler> messageHandlers;
+    private readonly IReminderDataStorage reminderStorage;
 
-    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers)
+    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers, IReminderDataStorage storage)
     {
         this.bot = bot;
         this.messageHandlers = new List<IMessageHandler>(messageHandlers);
+        this.reminderStorage = storage;
     }
 
     private async Task HandleUpdateAsync(ITelegramBotClient botClient,
@@ -31,16 +33,19 @@ public class MainBot
             var message = update.Message;
             if (message is null)
                 return;
-            
+
+            var handlerArguments = new MessageHandlerArguments(botClient, reminderStorage, message);
+
             foreach (var handler in messageHandlers)
             {
-                if (handler.TryHandleMessage(message, botClient))
+                if (await handler.TryHandleMessageAsync(handlerArguments))
                     return;
             }
 
             await botClient.SendTextMessageAsync(message.Chat,
                 "your message successfully bypassed all of our handlers; how`s that possible?!",
                 cancellationToken: cancellationToken);
+            throw new InvalidOperationException($"message {message.Text} escaped all handlers");
         }
     }
 
@@ -50,19 +55,29 @@ public class MainBot
         Console.WriteLine(exception.Message);
     }
 
-    private async Task SendReminderMessage(ITelegramBotClient botClient, CancellationToken cancellationToken)
+    private async Task StartSendingReminders()
     {
-        var record = DataBaseHandler.FindClosestRecord();
-        if (record == null) return;
-
-
-        if ((record.Reminder.TimeToRemind - DateTime.Now).TotalSeconds > 1)
+        while (true)
         {
-            return;
+            await SendReminderMessagesAsync();
+            Thread.Sleep(1000);
         }
+    }
 
-        await botClient.SendTextMessageAsync(new ChatId(record.Chat.Id), record.Reminder.text);
-        DataBaseHandler.RemoveRecord(record);
+    private async Task SendReminderMessagesAsync()
+    {
+        var reminders =  await reminderStorage.PopReminderDataRecordsAsync(maxCount: 3);
+        var reminderTasks = reminders
+            .Select(reminder => SendReminderAsync(reminder.Payload));
+        foreach (var task in reminderTasks)
+        {
+            await task;
+        }
+    }
+
+    private async Task SendReminderAsync(ReminderData reminder)
+    {
+        await bot.SendTextMessageAsync(reminder.ChatId, reminder.TextContent);
     }
 
     public void Run(bool forever = false)
@@ -82,12 +97,15 @@ public class MainBot
             cancellationToken
         );
 
-        do
+        Task.Run(StartSendingReminders);
+
+        if (forever)
+        {
+            Console.ReadLine();
+        }
+        else
         {
             Thread.Sleep(1000);
-            SendReminderMessage(bot, cancellationToken).Wait();
-        } while (forever);
-
-        Thread.Sleep(1000);
+        }
     }
 }

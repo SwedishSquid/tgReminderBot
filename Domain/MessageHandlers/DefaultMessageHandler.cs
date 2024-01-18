@@ -20,4 +20,10 @@ public class DefaultMessageHandler : IMessageHandler
     {
         await client.SendTextMessageAsync(chat, "Incorrect format");
     }
+
+    public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
+    {
+        await SendMessageToClient(args.Message.Chat, args.BotClient);
+        return true;
+    }
 }

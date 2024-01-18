@@ -19,20 +19,36 @@ public class ReminderMessageHandler: IMessageHandler
         this.parser = parser;
     }
 
-    public bool TryHandleMessage(Message message, ITelegramBotClient bot)
-    {
-        if (parser.TryParseReminderMessage(message.Text, out var reminder))
-        {
-            DataBaseHandler.AddRecord(message.Chat, reminder);
-            SendSuccessMessageToClient(message.Chat, bot).Wait();
-            return true;
-        }
+    //public bool TryHandleMessage(Message message, ITelegramBotClient bot)
+    //{
+    //    if (parser.TryParseReminderMessage(message.Text, out var reminder))
+    //    {
+    //        DataBaseHandler.AddRecord(message.Chat, reminder);
+    //        SendSuccessMessageToClient(message.Chat, bot).Wait();
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
     private static async Task SendSuccessMessageToClient(Chat chat, ITelegramBotClient botClient)
     {
         await botClient.SendTextMessageAsync(chat, "Done");
+    }
+
+    public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
+    {
+        if (args.Message.Text is null 
+            || !parser.TryParseReminderMessage(args.Message.Text, out var reminder))
+        {
+            return false;
+        }
+
+        await args.ReminderDataStorage.AddReminderDataAsync(
+            new ReminderData(reminder.TimeToRemind, args.Message.Chat.Id, reminder.text));
+
+        await SendSuccessMessageToClient(args.Message.Chat, args.BotClient);
+
+        return true;
     }
 }

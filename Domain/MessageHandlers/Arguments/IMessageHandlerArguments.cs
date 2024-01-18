@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-
 namespace Domain;
 
-public interface IMessageHandler
+public interface IMessageHandlerArguments
 {
-    //public bool TryHandleMessage(Message message, ITelegramBotClient bot);
+    ITelegramBotClient BotClient { get; }
 
-    public Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args);
+    Message Message { get; }
+
+    IReminderDataStorage ReminderDataStorage { get; }
 }
