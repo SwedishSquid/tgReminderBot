@@ -46,7 +46,7 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
             {
                 data = dataStorage[id];
             }
-            records.Add(Entity.Get(id, data));
+            records.Add(Entity.Create(id, data));
         }
 
         return records;

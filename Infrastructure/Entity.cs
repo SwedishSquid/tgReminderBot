@@ -16,7 +16,7 @@ public class Entity<T>(long id, T payload)
 
 public static class Entity
 {
-    public static Entity<T> Get<T>(long id, T payload)
+    public static Entity<T> Create<T>(long id, T payload)
     {
         return new Entity<T>(id, payload);
     }
