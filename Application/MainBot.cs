@@ -17,9 +17,9 @@ public class MainBot: IBot
 {
     private readonly ITelegramBotClient bot;
     private readonly List<IMessageHandler> messageHandlers;
-    private readonly IReminderDataStorage reminderStorage;
+    private readonly IStorageHandler reminderStorage;
 
-    public MainBot(ITelegramBotClient bot, List<IMessageHandler> messageHandlers, IReminderDataStorage storage)
+    public MainBot(ITelegramBotClient bot, List<IMessageHandler> messageHandlers, IStorageHandler storage)
     {
         this.bot = bot;
         this.messageHandlers = messageHandlers;
@@ -99,6 +99,8 @@ public class MainBot: IBot
         );
 
         Task.Run(StartSendingReminders);
+
+        reminderStorage.StartSavingCycle();
 
         if (forever)
         {

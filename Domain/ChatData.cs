@@ -8,7 +8,7 @@ namespace Domain;
 
 public class ChatData
 {
-    public long Id { get; }
+    public long Id { get; init; }
 
     public TimeSpan UtcOffset { get; set; }
 

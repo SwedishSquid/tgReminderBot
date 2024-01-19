@@ -4,25 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Domain;
 
-public class InMemoryReminderDataStorage : IReminderDataStorage
+public class DictionaryStorageHandler : IStorageHandler
 {
-    private readonly object dataStorageLock = new();
-    private readonly Dictionary<long, ReminderData> dataStorage;
+    protected readonly object _remindersStorageLock = new();
+    protected Dictionary<long, ReminderData> remindersStorage;
 
-    private readonly object sheduledQueueLock = new object();
-    private readonly PriorityQueue<long, DateTime> sheduledPriority;
+    protected readonly object sheduledQueueLock = new object();
+    protected readonly PriorityQueue<long, DateTime> sheduledPriority;
 
-    private readonly object _chatDataStorageLock = new object();
-    private readonly Dictionary<long, ChatData> chatDataStorage;
+    protected readonly object _chatDataStorageLock = new object();
+    protected Dictionary<long, ChatData> chatDataStorage;
 
-    private long nextReminderId = 1;
+    protected long nextReminderId = 1;
 
-    public InMemoryReminderDataStorage()
+    public DictionaryStorageHandler()
     {
-        dataStorage = new Dictionary<long, ReminderData>();
+        remindersStorage = new Dictionary<long, ReminderData>();
         sheduledPriority = new PriorityQueue<long, DateTime>();
         chatDataStorage = new Dictionary<long, ChatData>();
     }
@@ -46,9 +47,9 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
             }
 
             ReminderData data;
-            lock (dataStorageLock)
+            lock (_remindersStorageLock)
             {
-                data = dataStorage[id];
+                data = remindersStorage[id];
             }
             records.Add(Entity.Create(id, data));
         }
@@ -59,9 +60,9 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
     public async Task AddReminderDataAsync(ReminderData dataPiece)
     {
         var id = GenerateReminderId();
-        lock (dataStorageLock)
+        lock (_remindersStorageLock)
         {
-            dataStorage.Add(id, dataPiece);
+            remindersStorage.Add(id, dataPiece);
         }
 
         lock (sheduledQueueLock)
@@ -95,6 +96,20 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
         }
     }
 
+    public async Task SetChatDataAsync(ChatData chatData)
+    {
+        var chatId = chatData.Id;
+        lock (_chatDataStorageLock)
+        {
+            if (chatDataStorage.ContainsKey(chatId))
+            {
+                chatDataStorage[chatId] = chatData;
+                return;
+            }
+            chatDataStorage.Add(chatId, chatData);
+        }
+    }
+
     public async Task<ChatData> GetChatDataAsync(long chatId)
     {
         lock (_chatDataStorageLock)
@@ -103,5 +118,11 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
                 return value;
             return new ChatData(chatId);
         }
+    }
+
+    public virtual Task StartSavingCycle()
+    {
+        //do nothing
+        return Task.CompletedTask;
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain;
 
-public interface IReminderDataStorage
+public interface IStorageHandler
 {
     public Task<IEnumerable<Entity<ReminderData>>> PopReminderDataRecordsAsync(int maxCount);
 
@@ -15,7 +15,12 @@ public interface IReminderDataStorage
 
     public Task AddReminderDataAsync(Record dataRecord);
 
-    public Task SetChatUtcOffsetAsync(long chatId, TimeSpan offset);
+    public Task SetChatDataAsync(ChatData chatData);
 
     public Task<ChatData> GetChatDataAsync(long chatId);
+
+    /// <summary>
+    /// saving periodically; nonblocking
+    /// </summary>
+    public Task StartSavingCycle();
 }

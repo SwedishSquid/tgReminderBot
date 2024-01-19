@@ -26,7 +26,7 @@ public class TimeMessageHandler : IMessageHandler
         if (parts.Length == 1)
         {
             var utcTime = DateTime.UtcNow;
-            var clientTime = utcTime + (await args.ReminderDataStorage.GetChatDataAsync(chat.Id)).UtcOffset;
+            var clientTime = utcTime + (await args.StorageHandler.GetChatDataAsync(chat.Id)).UtcOffset;
             var textToSend = $"UTC time: {utcTime}\n\r" +
                 $"Your time: {clientTime}\n\r" +
                 $"Use \"/time setUtcOffset <data>\" to change your time settings" +
@@ -52,7 +52,9 @@ public class TimeMessageHandler : IMessageHandler
                 }
                 else
                 {
-                    await args.ReminderDataStorage.SetChatUtcOffsetAsync(chat.Id, TimeSpan.FromHours(offsetHours));
+                    var chatData = await args.StorageHandler.GetChatDataAsync(chat.Id);
+                    chatData.UtcOffset = TimeSpan.FromHours(offsetHours);
+                    await args.StorageHandler.SetChatDataAsync(chatData);
                     await args.BotClient.SendTextMessageAsync(chat, "time zone changed; check by calling \"/time\"");
                 }
                 return true;

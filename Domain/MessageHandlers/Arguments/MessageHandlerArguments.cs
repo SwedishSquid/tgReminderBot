@@ -16,13 +16,13 @@ public class MessageHandlerArguments : IMessageHandlerArguments
 
     public Message Message {  get; set; }
 
-    public IReminderDataStorage ReminderDataStorage { get; init; }
+    public IStorageHandler StorageHandler { get; init; }
 
-    public MessageHandlerArguments(ITelegramBotClient botClient, IReminderDataStorage reminderDataStorage,
+    public MessageHandlerArguments(ITelegramBotClient botClient, IStorageHandler reminderDataStorage,
         Message message)
     {
         BotClient = botClient;
-        ReminderDataStorage = reminderDataStorage;
+        StorageHandler = reminderDataStorage;
         Message = message;
     }
 }

@@ -44,7 +44,7 @@ public class ReminderMessageHandler: IMessageHandler
             return false;
         }
 
-        await args.ReminderDataStorage.AddReminderDataAsync(
+        await args.StorageHandler.AddReminderDataAsync(
             new ReminderData(reminder.TimeToRemind, args.Message.Chat.Id, reminder.text));
 
         await SendSuccessMessageToClient(args.Message.Chat, args.BotClient);

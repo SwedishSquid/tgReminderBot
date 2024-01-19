@@ -15,5 +15,5 @@ public interface IMessageHandlerArguments
 
     Message Message { get; }
 
-    IReminderDataStorage ReminderDataStorage { get; }
+    IStorageHandler StorageHandler { get; }
 }
