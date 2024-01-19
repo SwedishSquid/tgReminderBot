@@ -14,4 +14,8 @@ public interface IReminderDataStorage
     public Task AddReminderDataAsync(ReminderData data);
 
     public Task AddReminderDataAsync(Record dataRecord);
+
+    public Task SetChatUtcOffsetAsync(long chatId, TimeSpan offset);
+
+    public Task<ChatData> GetChatDataAsync(long chatId);
 }

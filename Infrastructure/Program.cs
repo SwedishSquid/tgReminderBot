@@ -1,4 +1,6 @@
-﻿class Program
+﻿using Infrastructure;
+
+class Program
 {
     public static void Main()
     {

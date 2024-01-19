@@ -11,13 +11,23 @@ class Program
 {
     public static void Main()
     {
-        //new MainBot(new TelegramBotClient(Secret.GetToken()), new List<IMessageHandler>() { new ReminderMessageHandler(new ReminderMessageParser()), new DefaultMessageHandler() }, new InMemoryReminderDataStorage()).Run(true);
-        var container = ConfigureContainer();
-        container.Get<IBot>().Run(true);
+        //var container = ConfigureContainer();
+        //container.Get<IBot>().Run(true);
+        EasyForMeComposition().Run(true);
     }
 
     private static StandardKernel ConfigureContainer()
     {
         return new StandardKernel(new NinjectModule[] {new AppModule(), new DomainModule()});
+    }
+
+    private static IBot EasyForMeComposition()
+    {
+        var messageHandlers = new List<IMessageHandler>() {
+            new ReminderMessageHandler(new ReminderMessageParser()),
+            new TimeMessageHandler(),
+            new DefaultMessageHandler(),
+        };
+        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new InMemoryReminderDataStorage());
     }
 }

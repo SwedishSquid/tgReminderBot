@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,8 @@ public class MessageHandlerArguments : IMessageHandlerArguments
 
     public IReminderDataStorage ReminderDataStorage { get; init; }
 
-    public MessageHandlerArguments(ITelegramBotClient botClient, IReminderDataStorage reminderDataStorage, Message message)
+    public MessageHandlerArguments(ITelegramBotClient botClient, IReminderDataStorage reminderDataStorage,
+        Message message)
     {
         BotClient = botClient;
         ReminderDataStorage = reminderDataStorage;

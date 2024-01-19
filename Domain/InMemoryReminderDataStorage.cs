@@ -15,12 +15,16 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
     private readonly object sheduledQueueLock = new object();
     private readonly PriorityQueue<long, DateTime> sheduledPriority;
 
+    private readonly object _chatDataStorageLock = new object();
+    private readonly Dictionary<long, ChatData> chatDataStorage;
+
     private long nextReminderId = 1;
 
     public InMemoryReminderDataStorage()
     {
         dataStorage = new Dictionary<long, ReminderData>();
         sheduledPriority = new PriorityQueue<long, DateTime>();
+        chatDataStorage = new Dictionary<long, ChatData>();
     }
 
     public async Task<IEnumerable<Entity<ReminderData>>> PopReminderDataRecordsAsync(int maxCount)
@@ -74,5 +78,30 @@ public class InMemoryReminderDataStorage : IReminderDataStorage
     private long GenerateReminderId()
     {
         return nextReminderId++;
+    }
+
+    public async Task SetChatUtcOffsetAsync(long chatId, TimeSpan offset)
+    {
+        lock (_chatDataStorageLock)
+        {
+            if (chatDataStorage.TryGetValue(chatId, out var chatData))
+            {
+                chatData.UtcOffset = offset;
+                chatDataStorage[chatId] = chatData;
+                return;
+            }
+            chatData = new ChatData(chatId, offset);
+            chatDataStorage.Add(chatId, chatData);
+        }
+    }
+
+    public async Task<ChatData> GetChatDataAsync(long chatId)
+    {
+        lock (_chatDataStorageLock)
+        {
+            if (chatDataStorage.TryGetValue(chatId, out var value))
+                return value;
+            return new ChatData(chatId);
+        }
     }
 }
