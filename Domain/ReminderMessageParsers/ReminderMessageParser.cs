@@ -10,7 +10,8 @@ namespace Domain;
 
 public class ReminderMessageParser : IReminderMessageParser
 {
-    private static readonly Regex matchRe = new(@"^((?:\d{2}\.\d{2}\.\d{4}\s)?\s*\d{2}:\d{2})\s+(.+)");
+    private static readonly Regex matchRe = new(@"^((?:\d{2}\.\d{2}\.\d{4}\s)?\s*\d{2}:\d{2})\s+(.+)",
+                                                RegexOptions.Singleline);
 
     public bool TryParseReminderMessage(string messageText, out Reminder reminder)
     {

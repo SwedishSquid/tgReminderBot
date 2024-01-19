@@ -12,16 +12,16 @@ using Domain;
 
 namespace Application;
 
-public class MainBot
+public class MainBot: IBot
 {
     private readonly ITelegramBotClient bot;
     private readonly List<IMessageHandler> messageHandlers;
     private readonly IReminderDataStorage reminderStorage;
 
-    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers, IReminderDataStorage storage)
+    public MainBot(ITelegramBotClient bot, List<IMessageHandler> messageHandlers, IReminderDataStorage storage)
     {
         this.bot = bot;
-        this.messageHandlers = new List<IMessageHandler>(messageHandlers);
+        this.messageHandlers = messageHandlers;
         this.reminderStorage = storage;
     }
 
