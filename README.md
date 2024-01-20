@@ -28,6 +28,14 @@ https://t.me/theFishestFish_bot - адрес бота
 Место сохранения информации на диск задается в Application.Program (по умолчанию задан относительный путь до папки в проекте)
 
 
+### Зависимости
+
+Application и Domain требуют следующих библиотек
+- Telegram.Bot (для работы с Api Телегама)
+- Ninject (DI контейнер)
+- ninject.extensions.conventions
+
+
 ### Выбранные критерии
 
 #### Разделение кода на слои
