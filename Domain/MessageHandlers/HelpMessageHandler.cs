@@ -10,6 +10,7 @@ using Telegram.Bot.Types;
 
 namespace Domain;
 
+[MessageHandlerHelp("help", "sends detailed help on the command", nameof(GetDetailedHelp))]
 public class HelpMessageHandler : IMessageHandler
 {
     private static readonly string helpMessage;
@@ -93,5 +94,10 @@ public class HelpMessageHandler : IMessageHandler
     private async Task SendMessageDetailedHelpMissing(Chat chat, ITelegramBotClient botClient)
     {
         await botClient.SendTextMessageAsync(chat, "detailed help missing");
+    }
+
+    private static string GetDetailedHelp()
+    {
+        return "\"/help <command name>\" (sends detailed help on the <command name>)";
     }
 }
