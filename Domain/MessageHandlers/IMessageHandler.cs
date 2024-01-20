@@ -13,5 +13,5 @@ public interface IMessageHandler
 {
     public Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args);
 
-    //public string GetDetailedDescription();
+    public static virtual string? GetDetailedHelp() => null;
 }

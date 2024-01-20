@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain;
 
-public class MessageHandlerDescriptionAttribute : Attribute
+public class MessageHandlerHelpAttribute : Attribute
 {
     public readonly string Name;
     public readonly string Description;
 
-    public MessageHandlerDescriptionAttribute(string name, string description)
+    public MessageHandlerHelpAttribute(string name, string description)
     {
         Name = name;
         Description = description;

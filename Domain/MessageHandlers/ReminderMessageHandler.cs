@@ -10,7 +10,7 @@ using Telegram.Bot.Types;
 
 namespace Domain;
 
-[MessageHandlerDescription("reminder", "creates a reminder")]
+[MessageHandlerHelp("reminder", "creates a reminder")]
 public class ReminderMessageHandler: IMessageHandler
 {
     private readonly IReminderMessageParser parser;
