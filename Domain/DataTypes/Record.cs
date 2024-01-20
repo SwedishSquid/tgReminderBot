@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 
-namespace Infrastructure;
+namespace Domain;
 
 public record Record(Chat Chat, Reminder Reminder);

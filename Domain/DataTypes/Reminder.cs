@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure;
+namespace Domain;
 
 public record Reminder(DateTime TimeToRemind = default, string text = "");
