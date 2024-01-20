@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace Domain;
 
@@ -12,57 +13,104 @@ public class TimeMessageHandler : IMessageHandler
 {
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
     {
-        var text = args.Message.Text;
+        if (!TryParseInput(args.Message.Text, out var parts))
+            return false;
 
-        var parts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        _ = await TryProcessWithoutArgumentsAsync(parts, args)
+            || await TryProcessSetUtcOffsetAsync(parts, args)
+            || await ProcessDefaultAsync(parts, args);
+
+        return true;
+    }
+
+    private bool TryParseInput(string? input, out string[] parts)
+    {
+        if (input is null)
+        {
+            parts = null;
+            return false;
+        }
+
+        parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length == 0 || parts[0].ToLower() != "/time")
+            return false;
+
+        return true;
+    }
+
+    private async Task<bool> TryProcessWithoutArgumentsAsync(string[] parts, IMessageHandlerArguments args)
+    {
+        if (parts.Length != 1)
+        {
+            return false;
+        }
+        var chat = args.Message.Chat;
+
+        var utcTime = DateTime.UtcNow;
+        var clientTime = (await args.StorageHandler.GetChatDataAsync(chat.Id)).ConvertUtcToLocal(utcTime);
+
+        var reply = $"UTC time: {utcTime}\n\r" +
+            $"Your time: {clientTime}\n\r" +
+            $"Use \"/time setUtcOffset <data>\" to change your time settings" +
+            $"Where <data> is \"utc<- or +><hours>\" \n\r" +
+            $"Where <- or +> is one of \"-+\" and where <hours> is integer from 0 to 12\n\r" +
+            $"Example: \"/time setUtcOffset utc+5\"";
+        await SendText(args, reply);
+        return true;
+    }
+
+    private async Task<bool> TryProcessSetUtcOffsetAsync(string[] parts, IMessageHandlerArguments args)
+    {
+        if (parts.Length < 2 || parts[1].ToLower() != "setUtcOffset".ToLower())
         {
             return false;
         }
 
         var chat = args.Message.Chat;
 
-        if (parts.Length == 1)
+        if (parts.Length == 2)
         {
-            var utcTime = DateTime.UtcNow;
-            var clientTime = utcTime + (await args.StorageHandler.GetChatDataAsync(chat.Id)).UtcOffset;
-            var textToSend = $"UTC time: {utcTime}\n\r" +
-                $"Your time: {clientTime}\n\r" +
-                $"Use \"/time setUtcOffset <data>\" to change your time settings" +
-                $"Where <data> is \"utc<- or +><hours>\" " +
-                $"Where <- or +> is one of \"-+\" and where <hours> is integer from 0 to 12";
-            await args.BotClient.SendTextMessageAsync(chat, textToSend);
+            await SendText(args, "wrong formatting: /time SetUtcOffset <arguments should be here>");
             return true;
         }
 
-        if (parts[1].ToLower() == "setUtcOffset".ToLower())
+        if (TryParseUtcArgument(parts[2], out var offsetHours))
         {
-            if (parts.Length <= 2)
+            if (offsetHours > 12 || offsetHours < -12)
             {
-                await args.BotClient.SendTextMessageAsync(chat, "wrong formatting: /time SetUtcOffset <arguments should be here>");
-                return true;
+                await SendText(args, $"offset too big");
             }
-            var argument = parts[2];
-            if (TryParseUtcArgument(parts[2], out var offsetHours))
+            else
             {
-                if (offsetHours > 12 || offsetHours < -12)
-                {
-                    await args.BotClient.SendTextMessageAsync(chat, $"offset too big");
-                }
-                else
-                {
-                    var chatData = await args.StorageHandler.GetChatDataAsync(chat.Id);
-                    chatData.UtcOffset = TimeSpan.FromHours(offsetHours);
-                    await args.StorageHandler.SetChatDataAsync(chatData);
-                    await args.BotClient.SendTextMessageAsync(chat, "time zone changed; check by calling \"/time\"");
-                }
-                return true;
+                var chatData = await args.StorageHandler.GetChatDataAsync(chat.Id);
+                chatData.UtcOffset = TimeSpan.FromHours(offsetHours);
+                await args.StorageHandler.SetChatDataAsync(chatData);
+
+                var reply = "time zone changed; check by calling \"/time\"";
+                await SendText(args, reply);
             }
         }
+        else
+        {
+            var reply = $"cant parse UtcArgument {parts[2]}\n\r" +
+                $"Example: utc-12";
+            await SendText(args, reply);
+        }
+        return true;
+    }
 
-        await args.BotClient.SendTextMessageAsync(chat, $"unrecognized argument \"{parts[1]}\" of \"/time\" command");
-        return false;
+    private async Task<bool> ProcessDefaultAsync(string[] parts, IMessageHandlerArguments args)
+    {
+        var reply = $"unrecognized argument \"{parts[1]}\" of \"/time\" command";
+        await SendText(args, reply);
+        return true;
+    }
+
+    private async Task SendText(IMessageHandlerArguments args, string text)
+    {
+        var chat = args.Message.Chat;
+        await args.BotClient.SendTextMessageAsync(chat, text);
     }
 
     private bool TryParseUtcArgument(string input, out int offsetHours)
