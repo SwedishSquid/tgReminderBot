@@ -22,6 +22,6 @@ public class StartMessageHandler : IMessageHandler
 
     public static async Task SendWelcomMessageAsync(Chat chat, ITelegramBotClient botClient)
     {
-        await botClient.SendTextMessageAsync(chat, "Welcome");
+        await botClient.SendTextMessageAsync(chat, "Welcome. use /help to get started");
     }
 }
