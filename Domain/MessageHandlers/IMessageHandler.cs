@@ -11,7 +11,7 @@ namespace Domain;
 
 public interface IMessageHandler
 {
-    //public bool TryHandleMessage(Message message, ITelegramBotClient bot);
-
     public Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args);
+
+    public static virtual string? GetDetailedHelp() => null;
 }
