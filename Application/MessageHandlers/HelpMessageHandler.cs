@@ -72,7 +72,7 @@ public class HelpMessageHandler : IMessageHandler
         }
         else if (messageHandlersDetailedHelpByName.TryGetValue(handlerName, out var detailedHelp))
         {
-            if (detailedHelp is null)
+            if (detailedHelp is null || detailedHelp == "")
                 await SendMessageDetailedHelpMissing(args.Message.Chat, args.BotClient);
             else
                 await SendDetailedHelpMessageAsync(args.Message.Chat, args.BotClient, detailedHelp);

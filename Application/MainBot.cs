@@ -9,6 +9,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot;
 using Domain;
 using Infrastructure;
+using Telegram.Bot.Args;
+using Telegram.Bot.Exceptions;
 
 
 namespace Application;
@@ -61,6 +63,13 @@ public class MainBot: IBot
     {
         Console.WriteLine("exception recieved");
         Console.WriteLine(exception.Message);
+        //if (exception )
+        Console.WriteLine(exception.GetType());
+        if (exception is ApiRequestException && exception.Message == "Bad Request: message text is empty")
+        {
+            Console.WriteLine("problem is - bot attempts to send message with empty string as text;" +
+                " it is impossible, but every message from user must receive an answer;");
+        }
     }
 
     private async Task StartSendingReminders()
