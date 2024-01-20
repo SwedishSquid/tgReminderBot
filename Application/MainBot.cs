@@ -18,12 +18,15 @@ public class MainBot: IBot
     private readonly ITelegramBotClient bot;
     private readonly List<IMessageHandler> messageHandlers;
     private readonly IStorageHandler reminderStorage;
+    private readonly int maxRemindersCountSendPerSecond;
 
-    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers, IStorageHandler storage)
+    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers,
+        IStorageHandler storage, int maxRemindersCountSendPerSecond)
     {
         this.bot = bot;
         this.messageHandlers = new List<IMessageHandler>(messageHandlers);
         this.reminderStorage = storage;
+        this.maxRemindersCountSendPerSecond = maxRemindersCountSendPerSecond;
     }
 
     private async Task HandleUpdateAsync(ITelegramBotClient botClient,

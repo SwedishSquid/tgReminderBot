@@ -19,6 +19,6 @@ public class DomainModule : NinjectModule
             .Excluding<ReminderMessageParserList>()
             .BindAllInterfaces());
 
-        Kernel.Bind<IStorageHandler>().To<StorageHandler>().InSingletonScope();
+        //Kernel.Bind<IStorageHandler>().To<StorageHandler>().InSingletonScope();
     }
 }

@@ -17,7 +17,15 @@ class Program
 
     private static StandardKernel ConfigureContainer()
     {
+        var maxRemindersCountSendPerSecond = 5;
+
+        var relPathToSomeFolderInProject = "../../../../Infrastructure/AppData/persistence";
+        var pathToPersistenceFolder = relPathToSomeFolderInProject;     //can be any path to a folder;
+                                                                        //bot will store data there to resume if restarted
+
         var container = new StandardKernel(new NinjectModule[] {new AppModule(), new DomainModule()});
+
+        container.Bind<IStorageHandler>().ToConstant(new StorageHandler(pathToPersistenceFolder));
 
         container.Bind<MainBot>()
             .ToConstant(
@@ -30,7 +38,9 @@ class Program
                         container.Get<TimeMessageHandler>(),
                         container.Get<DefaultMessageHandler>(),
                     },
-                    container.Get<IStorageHandler>()))
+                    container.Get<IStorageHandler>(),
+                    maxRemindersCountSendPerSecond)
+                )
             .InSingletonScope();
 
         container.Bind<IBot>().ToConstant(container.Get<MainBot>());

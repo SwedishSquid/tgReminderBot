@@ -18,9 +18,9 @@ public class StorageHandler : IStorageHandler
 
     private long nextReminderId = 0;
 
-    public StorageHandler()
+    public StorageHandler(string folderPath)
     {
-        var relFolderPath = "../../../../Infrastructure/AppData/persistence";
+        var relFolderPath = folderPath;
         var remindersName = "reminders";
         var chatsName = "chats";
 
