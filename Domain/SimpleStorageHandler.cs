@@ -39,12 +39,14 @@ public class SimpleStorageHandler : DictionaryStorageHandler
             {
                 foreach (var kv in remindersStorage)
                 {
+                    nextReminderId = Math.Max(nextReminderId, kv.Key);
                     if (kv.Value.State != ReminderState.Sheduled)
                         continue;
                     sheduledPriority.Enqueue(kv.Key, kv.Value.NotificationTime);
                 }
             }
         }
+        nextReminderId++;
     }
 
     private void Dump(object obj, string filename, object objLock)

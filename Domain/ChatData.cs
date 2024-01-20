@@ -17,4 +17,14 @@ public class ChatData
         Id = id;
         UtcOffset = utcOffset;
     }
+
+    public DateTime ConvertLocalToUtc(DateTime localDateTime)
+    {
+        return localDateTime - UtcOffset;
+    }
+
+    public DateTime ConvertUtcToLocal(DateTime utcDateTime)
+    {
+        return utcDateTime + UtcOffset;
+    }
 }

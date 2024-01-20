@@ -40,7 +40,7 @@ public class DictionaryStorageHandler : IStorageHandler
             long id;
             lock (sheduledQueueLock)
             {
-                if (!sheduledPriority.TryPeek(out id, out var time) || time > DateTime.Now)
+                if (!sheduledPriority.TryPeek(out id, out var time) || time > DateTime.UtcNow)
                     break;
 
                 _ = sheduledPriority.Dequeue();
@@ -50,6 +50,7 @@ public class DictionaryStorageHandler : IStorageHandler
             lock (_remindersStorageLock)
             {
                 data = remindersStorage[id];
+                data.State = ReminderState.Sent;
             }
             records.Add(Entity.Create(id, data));
         }
@@ -60,6 +61,9 @@ public class DictionaryStorageHandler : IStorageHandler
     public async Task AddReminderDataAsync(ReminderData dataPiece)
     {
         var id = GenerateReminderId();
+        var chatData = await GetChatDataAsync(dataPiece.ChatId);
+        dataPiece.NotificationTime = chatData.ConvertLocalToUtc(dataPiece.NotificationTime);
+
         lock (_remindersStorageLock)
         {
             remindersStorage.Add(id, dataPiece);
