@@ -27,6 +27,7 @@ class Program
                         container.Get<StartMessageHandler>(),
                         container.Get<HelpMessageHandler>(),
                         container.Get<ReminderMessageHandler>(),
+                        container.Get<TimeMessageHandler>(),
                         container.Get<DefaultMessageHandler>(),
                     },
                     container.Get<IStorageHandler>()))
@@ -43,6 +44,6 @@ class Program
             new TimeMessageHandler(),
             new DefaultMessageHandler(),
         };
-        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new SimpleStorageHandler());
+        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new AnotherStorageHandler());
     }
 }
