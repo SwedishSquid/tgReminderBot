@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain;
 
+[ReminderMessageFormat("tomorrow|today <time> <text>", "for convenience")]
 public class WordsParser : IReminderMessageParser
 {
     public bool TryParseReminderMessage(string messageText, ChatData chatData, out Reminder reminder)

@@ -9,6 +9,7 @@ using Telegram.Bot.Types;
 
 namespace Application;
 
+[MessageHandlerHelp("time", "use this command to configure your time zone", nameof(TimeMessageHandler.GetDetailedHelpMessage))]
 public class TimeMessageHandler : IMessageHandler
 {
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
@@ -123,5 +124,12 @@ public class TimeMessageHandler : IMessageHandler
         }
         offsetHours = 0;
         return false;
+    }
+
+    public static string GetDetailedHelpMessage()
+    {
+        return "usage: \"/time\" - get server time and your time; use to check your time zone \n\r" +
+            "\"/time setUtcOffset utc<n>\" where n is integer with sign - sets your time zone\n\r" +
+            "Example: \"/time setUtcOffset utc+5\"";
     }
 }
