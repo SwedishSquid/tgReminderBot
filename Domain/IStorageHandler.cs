@@ -11,7 +11,7 @@ public interface IStorageHandler
 {
     public Task<IEnumerable<Entity<ReminderData>>> PopReminderDataRecordsAsync(int maxCount);
 
-    public Task AddReminderDataAsync(ReminderData data);
+    public Task AddReminderDataAsync(ReminderData reminder);
 
     public Task AddReminderDataAsync(Record dataRecord);
 

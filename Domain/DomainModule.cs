@@ -29,6 +29,6 @@ public class DomainModule : NinjectModule
         Kernel.Bind<IReminderMessageParser>()
             .To<ReminderMessageParserList>()
             .WhenInjectedInto<ReminderMessageHandler>();
-        Kernel.Bind<IStorageHandler>().To<DictionaryStorageHandler>().InSingletonScope();
+        Kernel.Bind<IStorageHandler>().To<AnotherStorageHandler>().InSingletonScope();
     }
 }

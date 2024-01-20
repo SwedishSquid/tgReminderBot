@@ -26,9 +26,10 @@ class Program
                     new List<IMessageHandler>() {
                         container.Get<StartMessageHandler>(),
                         container.Get<ReminderMessageHandler>(),
+                        container.Get<TimeMessageHandler>(),
                         container.Get<DefaultMessageHandler>(),
                     },
-                    container.Get<IReminderDataStorage>()))
+                    container.Get<IStorageHandler>()))
             .InSingletonScope();
 
         container.Bind<IBot>().ToConstant(container.Get<MainBot>());
