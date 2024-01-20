@@ -18,24 +18,29 @@ public class HelpMessageHandler : IMessageHandler
 
     static HelpMessageHandler()
     {
-        var messageHandlerTypesWithDescription = Assembly.GetExecutingAssembly()
+        var messageHandlerTypesWithHelp = Assembly.GetExecutingAssembly()
             .GetTypes()
-            .Where(type => typeof(IMessageHandler).IsAssignableFrom(type)
-                        && !type.IsInterface
-                        && type.GetCustomAttribute<MessageHandlerHelpAttribute>() is not null)
+            .Where(type => typeof(IMessageHandler).IsAssignableFrom(type) && !type.IsInterface)
+            .Select(messageHandlerType => (
+                MessageHandlerType: messageHandlerType,
+                Help: messageHandlerType.GetCustomAttribute<MessageHandlerHelpAttribute>()
+                ))
+            .Where(messageHandler => messageHandler.Help is not null)
             .ToList();
 
-        helpMessage = CreateHelpMessage(
-            messageHandlerTypesWithDescription.Select(type => type.GetCustomAttribute<MessageHandlerHelpAttribute>()));
+        helpMessage = CreateHelpMessage(messageHandlerTypesWithHelp.Select(messageHandler => messageHandler.Help));
 
-        messageHandlersDetailedHelpByName = messageHandlerTypesWithDescription.ToDictionary(
-            messageHandlerType => messageHandlerType.GetCustomAttribute<MessageHandlerHelpAttribute>().Name,
-            GetHandlerMessageDetailedHelpFromType);
+        messageHandlersDetailedHelpByName = messageHandlerTypesWithHelp.ToDictionary(
+            messageHandler => messageHandler.Help.Name,
+            messageHandler => FindHandlerMessageDetailedHelpFromType(
+                messageHandler.MessageHandlerType, 
+                messageHandler.Help.GetDetailedHelpMethodName));
     }
 
     private static string CreateHelpMessage(IEnumerable<MessageHandlerHelpAttribute> messageHandlersDescription)
     {
         var helpMessageBuilder = new StringBuilder();
+        helpMessageBuilder.AppendLine("<command name> - <description>");
         foreach(var messageHandlerDescription in messageHandlersDescription)
         {
             helpMessageBuilder.AppendLine($"{messageHandlerDescription.Name} - {messageHandlerDescription.Description}");
@@ -44,10 +49,11 @@ public class HelpMessageHandler : IMessageHandler
         return helpMessageBuilder.ToString();
     }
 
-    private static string? GetHandlerMessageDetailedHelpFromType(Type messageHandlerType)
+    private static string? FindHandlerMessageDetailedHelpFromType(
+        Type messageHandlerType, string getDetailedHelpMethodName)
     {
-        var getDetailedHelpMethod = messageHandlerType.GetMethod(nameof(IMessageHandler.GetDetailedHelp));
-        return (string)getDetailedHelpMethod?.Invoke(null, null);
+        var getDetailedHelpMethod = messageHandlerType.GetMethod(getDetailedHelpMethodName);
+        return (string?)getDetailedHelpMethod?.Invoke(null, null);
     }
 
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)

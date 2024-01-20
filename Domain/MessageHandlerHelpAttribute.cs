@@ -10,10 +10,12 @@ public class MessageHandlerHelpAttribute : Attribute
 {
     public readonly string Name;
     public readonly string Description;
+    public readonly string GetDetailedHelpMethodName;
 
-    public MessageHandlerHelpAttribute(string name, string description)
+    public MessageHandlerHelpAttribute(string name, string description, string getDetailedHelpMethodName)
     {
         Name = name;
         Description = description;
+        GetDetailedHelpMethodName = getDetailedHelpMethodName;
     }
 }

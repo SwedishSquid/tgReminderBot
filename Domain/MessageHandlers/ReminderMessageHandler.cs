@@ -12,7 +12,7 @@ using Telegram.Bot.Types;
 
 namespace Domain;
 
-[MessageHandlerHelp("reminder", "creates a reminder")]
+[MessageHandlerHelp("reminder", "creates a reminder", nameof(GetDetailedHelp))]
 public class ReminderMessageHandler: IMessageHandler
 {
     private static readonly string detailedHelp;
@@ -33,7 +33,7 @@ public class ReminderMessageHandler: IMessageHandler
     {
         var detailedHelpBuilder = new StringBuilder();
         foreach(var reminderMessageFormat in reminderMessageFormats)
-            detailedHelpBuilder.AppendLine($"{reminderMessageFormat.Pattern} ({reminderMessageFormat.Description})");
+            detailedHelpBuilder.AppendLine($"\"{reminderMessageFormat.Pattern}\" ({reminderMessageFormat.Description})");
         return detailedHelpBuilder.ToString();
     }
 
