@@ -96,7 +96,7 @@ public class HelpMessageHandler : IMessageHandler
         await botClient.SendTextMessageAsync(chat, "detailed help missing");
     }
 
-    private static string GetDetailedHelp()
+    public static string GetDetailedHelp()
     {
         return "\"/help <command name>\" (sends detailed help on the <command name>)";
     }

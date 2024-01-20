@@ -67,5 +67,5 @@ public class ReminderMessageHandler: IMessageHandler
         return true;
     }
 
-    public static string? GetDetailedHelp() => detailedHelp;
+    public static string GetDetailedHelp() => detailedHelp;
 }
