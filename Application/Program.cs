@@ -43,6 +43,6 @@ class Program
             new TimeMessageHandler(),
             new DefaultMessageHandler(),
         };
-        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new AnotherStorageHandler());
+        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new StorageHandler());
     }
 }

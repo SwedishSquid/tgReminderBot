@@ -27,8 +27,10 @@ public class ReminderMessageHandler: IMessageHandler
 
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
     {
+        var chatData = await args.StorageHandler.GetChatDataAsync(args.Message.Chat.Id);
+
         if (args.Message.Text is null 
-            || !parser.TryParseReminderMessage(args.Message.Text, out var reminder))
+            || !parser.TryParseReminderMessage(args.Message.Text, chatData, out var reminder))
         {
             return false;
         }

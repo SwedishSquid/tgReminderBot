@@ -9,5 +9,5 @@ namespace Domain;
 
 public interface IReminderMessageParser
 {
-    public bool TryParseReminderMessage(string messageText, out Reminder reminder);
+    public bool TryParseReminderMessage(string messageText, ChatData chatData, out Reminder reminder);
 }

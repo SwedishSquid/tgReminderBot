@@ -15,11 +15,11 @@ public class ReminderMessageParserList : IReminderMessageParser
         parsers = reminderMessageParsers;
     }
 
-    public bool TryParseReminderMessage(string messageText, out Reminder reminder)
+    public bool TryParseReminderMessage(string messageText, ChatData chatData, out Reminder reminder)
     {
         foreach (var parser in parsers)
         {
-            if (parser.TryParseReminderMessage(messageText, out reminder))
+            if (parser.TryParseReminderMessage(messageText, chatData, out reminder))
                 return true;
         }
         reminder = new Reminder();
