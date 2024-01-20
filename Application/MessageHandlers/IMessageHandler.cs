@@ -12,6 +12,4 @@ namespace Application;
 public interface IMessageHandler
 {
     public Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args);
-
-    public static string? GetDetailedHelp() => null;
 }

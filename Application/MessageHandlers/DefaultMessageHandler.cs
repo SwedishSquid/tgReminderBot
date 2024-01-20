@@ -10,20 +10,13 @@ namespace Application;
 
 public class DefaultMessageHandler : IMessageHandler
 {
-    public bool TryHandleMessage(Message message, ITelegramBotClient bot)
-    {
-        SendMessageToClient(message.Chat, bot).Wait();
-        return true;
-    }
-
-    private static async Task SendMessageToClient(Chat chat, ITelegramBotClient client)
-    {
-        await client.SendTextMessageAsync(chat, "Incorrect format");
-    }
-
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
     {
         await SendMessageToClient(args.Message.Chat, args.BotClient);
         return true;
+    }
+    private static async Task SendMessageToClient(Chat chat, ITelegramBotClient client)
+    {
+        await client.SendTextMessageAsync(chat, "Incorrect format");
     }
 }

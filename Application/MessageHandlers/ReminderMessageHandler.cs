@@ -40,11 +40,6 @@ public class ReminderMessageHandler: IMessageHandler
         this.parser = parser;
     }
 
-    private static async Task SendSuccessMessageToClient(Chat chat, ITelegramBotClient botClient)
-    {
-        await botClient.SendTextMessageAsync(chat, "Done");
-    }
-
     public async Task<bool> TryHandleMessageAsync(IMessageHandlerArguments args)
     {
         var chatData = await args.StorageHandler.GetChatDataAsync(args.Message.Chat.Id);
@@ -61,6 +56,11 @@ public class ReminderMessageHandler: IMessageHandler
         await SendSuccessMessageToClient(args.Message.Chat, args.BotClient);
 
         return true;
+    }
+
+    private static async Task SendSuccessMessageToClient(Chat chat, ITelegramBotClient botClient)
+    {
+        await botClient.SendTextMessageAsync(chat, "Done");
     }
 
     public static string GetDetailedHelp() => detailedHelp;

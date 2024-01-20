@@ -28,7 +28,7 @@ public class TimeMessageHandler : IMessageHandler
     {
         if (input is null)
         {
-            parts = null;
+            parts = Array.Empty<string>();
             return false;
         }
 

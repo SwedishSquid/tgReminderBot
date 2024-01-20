@@ -36,14 +36,4 @@ class Program
         container.Bind<IBot>().ToConstant(container.Get<MainBot>());
         return container;
     }
-
-    private static IBot EasyForMeComposition()
-    {
-        var messageHandlers = new List<IMessageHandler>() {
-            new ReminderMessageHandler(new ReminderMessageParser()),
-            new TimeMessageHandler(),
-            new DefaultMessageHandler(),
-        };
-        return new MainBot(new TelegramBotClient(Secret.GetToken()), messageHandlers, new StorageHandler());
-    }
 }

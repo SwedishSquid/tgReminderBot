@@ -81,17 +81,17 @@ public class HelpMessageHandler : IMessageHandler
         return false;
     }
 
-    private async Task SendHelpMessageAsync(Chat chat, ITelegramBotClient botClient)
+    private static async Task SendHelpMessageAsync(Chat chat, ITelegramBotClient botClient)
     {
         await botClient.SendTextMessageAsync(chat, helpMessage);
     }
 
-    private async Task SendDetailedHelpMessageAsync(Chat chat, ITelegramBotClient botClient, string detailedHelpMessage)
+    private static async Task SendDetailedHelpMessageAsync(Chat chat, ITelegramBotClient botClient, string detailedHelpMessage)
     {
         await botClient.SendTextMessageAsync(chat, detailedHelpMessage);
     }
 
-    private async Task SendMessageDetailedHelpMissing(Chat chat, ITelegramBotClient botClient)
+    private static async Task SendMessageDetailedHelpMissing(Chat chat, ITelegramBotClient botClient)
     {
         await botClient.SendTextMessageAsync(chat, "detailed help missing");
     }
