@@ -1,16 +1,15 @@
-﻿using Castle.DynamicProxy.Contributors;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Domain;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Domain;
+namespace Application;
 
 [MessageHandlerHelp("reminder", "creates a reminder", nameof(GetDetailedHelp))]
 public class ReminderMessageHandler: IMessageHandler

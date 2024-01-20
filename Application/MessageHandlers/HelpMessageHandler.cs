@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Domain;
+namespace Application;
 
 [MessageHandlerHelp("help", "sends detailed help on the command", nameof(GetDetailedHelp))]
 public class HelpMessageHandler : IMessageHandler

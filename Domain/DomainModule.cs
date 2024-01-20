@@ -15,20 +15,10 @@ public class DomainModule : NinjectModule
             c => c
             .FromThisAssembly()
             .SelectAllClasses()
-            .InheritedFrom<IMessageHandler>()
-            .BindAllInterfaces());
-
-        Kernel.Bind(
-            c => c
-            .FromThisAssembly()
-            .SelectAllClasses()
             .InheritedFrom<IReminderMessageParser>()
             .Excluding<ReminderMessageParserList>()
             .BindAllInterfaces());
 
-        Kernel.Bind<IReminderMessageParser>()
-            .To<ReminderMessageParserList>()
-            .WhenInjectedInto<ReminderMessageHandler>();
         Kernel.Bind<IStorageHandler>().To<StorageHandler>().InSingletonScope();
     }
 }

@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 
 
-namespace Domain;
+namespace Application;
 
 public interface IMessageHandler
 {

@@ -16,12 +16,12 @@ public class WordsParser : IReminderMessageParser
 
         if (!parser.TryParse(messageText, out var date, out var time, out var text))
         {
-            reminder = null;
+            reminder = new Reminder();
             return false;
         }
 
         if (!TimeSpan.TryParse(time, out var timeSpan)){
-            reminder = null;
+            reminder = new Reminder();
             return false;
         }
 
