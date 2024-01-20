@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,7 +15,27 @@ namespace Domain;
 [MessageHandlerHelp("reminder", "creates a reminder")]
 public class ReminderMessageHandler: IMessageHandler
 {
+    private static readonly string detailedHelp;
     private readonly IReminderMessageParser parser;
+
+    static ReminderMessageHandler()
+    {
+        var reminderMessageFormats = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(type => typeof(IReminderMessageParser).IsAssignableFrom(type) && !type.IsInterface)
+            .Select(type => type.GetCustomAttribute<ReminderMessageFormatAttribute>())
+            .Where(reminderMessageFormat => reminderMessageFormat is not null);
+
+        detailedHelp = CreateDetailedHelp(reminderMessageFormats);
+    }
+
+    private static string CreateDetailedHelp(IEnumerable<ReminderMessageFormatAttribute> reminderMessageFormats)
+    {
+        var detailedHelpBuilder = new StringBuilder();
+        foreach(var reminderMessageFormat in reminderMessageFormats)
+            detailedHelpBuilder.AppendLine($"{reminderMessageFormat.Pattern} ({reminderMessageFormat.Description})");
+        return detailedHelpBuilder.ToString();
+    }
 
     public ReminderMessageHandler(IReminderMessageParser parser)
     {
@@ -42,8 +63,5 @@ public class ReminderMessageHandler: IMessageHandler
         return true;
     }
 
-    public static string? GetDetailedHelp()
-    {
-        return "fff";
-    }
+    public static string? GetDetailedHelp() => detailedHelp;
 }
