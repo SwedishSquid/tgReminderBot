@@ -11,13 +11,27 @@ class Program
 {
     public static void Main()
     {
-        //new MainBot(new TelegramBotClient(Secret.GetToken()), new List<IMessageHandler>() { new ReminderMessageHandler(new ReminderMessageParser()), new DefaultMessageHandler() }, new InMemoryReminderDataStorage()).Run(true);
         var container = ConfigureContainer();
         container.Get<IBot>().Run(true);
     }
 
     private static StandardKernel ConfigureContainer()
     {
-        return new StandardKernel(new NinjectModule[] {new AppModule(), new DomainModule()});
+        var container = new StandardKernel(new NinjectModule[] {new AppModule(), new DomainModule()});
+
+        container.Bind<MainBot>()
+            .ToConstant(
+                new MainBot(
+                    container.Get<ITelegramBotClient>(),
+                    new List<IMessageHandler>() {
+                        container.Get<StartMessageHandler>(),
+                        container.Get<ReminderMessageHandler>(),
+                        container.Get<DefaultMessageHandler>(),
+                    },
+                    container.Get<IReminderDataStorage>()))
+            .InSingletonScope();
+
+        container.Bind<IBot>().ToConstant(container.Get<MainBot>());
+        return container;
     }
 }

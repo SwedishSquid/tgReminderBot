@@ -18,10 +18,10 @@ public class MainBot: IBot
     private readonly List<IMessageHandler> messageHandlers;
     private readonly IReminderDataStorage reminderStorage;
 
-    public MainBot(ITelegramBotClient bot, List<IMessageHandler> messageHandlers, IReminderDataStorage storage)
+    public MainBot(ITelegramBotClient bot, IEnumerable<IMessageHandler> messageHandlers, IReminderDataStorage storage)
     {
         this.bot = bot;
-        this.messageHandlers = messageHandlers;
+        this.messageHandlers = new List<IMessageHandler>(messageHandlers);
         this.reminderStorage = storage;
     }
 

@@ -10,6 +10,7 @@ using Telegram.Bot.Types;
 
 namespace Domain;
 
+[MessageHandlerDescription("reminder", "creates a reminder")]
 public class ReminderMessageHandler: IMessageHandler
 {
     private readonly IReminderMessageParser parser;
@@ -18,18 +19,6 @@ public class ReminderMessageHandler: IMessageHandler
     {
         this.parser = parser;
     }
-
-    //public bool TryHandleMessage(Message message, ITelegramBotClient bot)
-    //{
-    //    if (parser.TryParseReminderMessage(message.Text, out var reminder))
-    //    {
-    //        DataBaseHandler.AddRecord(message.Chat, reminder);
-    //        SendSuccessMessageToClient(message.Chat, bot).Wait();
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
 
     private static async Task SendSuccessMessageToClient(Chat chat, ITelegramBotClient botClient)
     {
