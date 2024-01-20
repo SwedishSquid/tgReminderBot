@@ -9,7 +9,7 @@ using Infrastructure;
 
 namespace Domain;
 
-public class AnotherStorageHandler : IStorageHandler
+public class StorageHandler : IStorageHandler
 {
     private readonly IKVStorage<long, ReminderData> reminders;
     private readonly IKVStorage<long, ChatData> chats;
@@ -19,7 +19,7 @@ public class AnotherStorageHandler : IStorageHandler
 
     private long nextReminderId = 0;
 
-    public AnotherStorageHandler()
+    public StorageHandler()
     {
         var relFolderPath = "../../../../Infrastructure/AppData/persistence";
         var remindersName = "reminders";
