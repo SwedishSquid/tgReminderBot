@@ -31,9 +31,6 @@ public class ReminderMessageHandler: IMessageHandler
 
     private static string CreateDetailedHelp(IEnumerable<ReminderMessageFormatAttribute> reminderMessageFormats)
     {
-        //var detailedHelpBuilder = new StringBuilder();
-        //foreach(var reminderMessageFormat in reminderMessageFormats)
-        //    detailedHelpBuilder.AppendLine($"\"{reminderMessageFormat.Pattern}\" ({reminderMessageFormat.Description})");
         return string.Join(
             "\n",
             reminderMessageFormats.Select(format => $"\"{format.Pattern}\" ({format.Description})"));
@@ -67,5 +64,5 @@ public class ReminderMessageHandler: IMessageHandler
         return true;
     }
 
-    public static string? GetDetailedHelp() => detailedHelp;
+    public static string GetDetailedHelp() => detailedHelp;
 }
