@@ -25,6 +25,7 @@ class Program
                     container.Get<ITelegramBotClient>(),
                     new List<IMessageHandler>() {
                         container.Get<StartMessageHandler>(),
+                        container.Get<HelpMessageHandler>(),
                         container.Get<ReminderMessageHandler>(),
                         container.Get<TimeMessageHandler>(),
                         container.Get<DefaultMessageHandler>(),

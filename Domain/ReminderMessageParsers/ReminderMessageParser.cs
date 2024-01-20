@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Domain;
 
+[ReminderMessageFormat("(dd.mm.yyyy)? hh:mm <reminder text>", 
+    "missing numbers should be filled in with zeros")]
 public class ReminderMessageParser : IReminderMessageParser
 {
     private static readonly Regex matchRe = new(@"^((?:\d{2}\.\d{2}\.\d{4}\s)?\s*\d{2}:\d{2})\s+(.+)",
