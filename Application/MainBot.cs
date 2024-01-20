@@ -27,6 +27,10 @@ public class MainBot: IBot
         this.messageHandlers = new List<IMessageHandler>(messageHandlers);
         this.reminderStorage = storage;
         this.maxRemindersCountSendPerSecond = maxRemindersCountSendPerSecond;
+        if (maxRemindersCountSendPerSecond <= 0)
+        {
+            throw new ArgumentException($"{nameof(maxRemindersCountSendPerSecond)} must be positive");
+        }
     }
 
     private async Task HandleUpdateAsync(ITelegramBotClient botClient,
@@ -70,7 +74,7 @@ public class MainBot: IBot
 
     private async Task SendReminderMessagesAsync()
     {
-        var reminders =  await reminderStorage.PopReminderDataRecordsAsync(maxCount: 3);
+        var reminders =  await reminderStorage.PopReminderDataRecordsAsync(maxCount: maxRemindersCountSendPerSecond);
         var reminderTasks = reminders
             .Select(reminder => SendReminderAsync(reminder.Payload));
         foreach (var task in reminderTasks)
