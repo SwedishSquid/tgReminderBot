@@ -25,12 +25,11 @@ public class ReminderMessageHandler: IMessageHandler
             .Select(type => type.GetCustomAttribute<ReminderMessageFormatAttribute>())
             .Where(reminderMessageFormat => reminderMessageFormat is not null);
         detailedHelp = CreateDetailedHelp(reminderMessageFormats);
-        ;
     }
 
     private static string CreateDetailedHelp(IEnumerable<ReminderMessageFormatAttribute> reminderMessageFormats)
     {
-        var detailedHelpMessageBuilder = new StringBuilder("reminder formats:");
+        var detailedHelpMessageBuilder = new StringBuilder("reminder formats:\n");
         foreach (var format in reminderMessageFormats)
             detailedHelpMessageBuilder.AppendLine($"\"{format.Pattern}\" ({format.Description})");
         return detailedHelpMessageBuilder.ToString();
