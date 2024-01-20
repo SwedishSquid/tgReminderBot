@@ -25,10 +25,11 @@ class Program
                     container.Get<ITelegramBotClient>(),
                     new List<IMessageHandler>() {
                         container.Get<StartMessageHandler>(),
+                        container.Get<HelpMessageHandler>(),
                         container.Get<ReminderMessageHandler>(),
                         container.Get<DefaultMessageHandler>(),
                     },
-                    container.Get<IReminderDataStorage>()))
+                    container.Get<IStorageHandler>()))
             .InSingletonScope();
 
         container.Bind<IBot>().ToConstant(container.Get<MainBot>());

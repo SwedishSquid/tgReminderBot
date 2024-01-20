@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Castle.DynamicProxy.Contributors;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -39,5 +40,10 @@ public class ReminderMessageHandler: IMessageHandler
         await SendSuccessMessageToClient(args.Message.Chat, args.BotClient);
 
         return true;
+    }
+
+    public static string? GetDetailedHelp()
+    {
+        return "fff";
     }
 }
