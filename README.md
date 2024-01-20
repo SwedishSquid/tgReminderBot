@@ -14,3 +14,11 @@
 
 "/time setUtcOffset utc+9"
 
+"20.01.2024 21:22 wahahah"
+
+
+### User guide
+
+Run Application project to start;
+
+press Enter to stop;
