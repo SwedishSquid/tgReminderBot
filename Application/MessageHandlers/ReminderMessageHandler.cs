@@ -19,20 +19,21 @@ public class ReminderMessageHandler: IMessageHandler
 
     static ReminderMessageHandler()
     {
-        var reminderMessageFormats = Assembly.GetExecutingAssembly()
+        var reminderMessageFormats = Assembly.GetAssembly(typeof(IReminderMessageParser))
             .GetTypes()
             .Where(type => typeof(IReminderMessageParser).IsAssignableFrom(type) && !type.IsInterface)
             .Select(type => type.GetCustomAttribute<ReminderMessageFormatAttribute>())
             .Where(reminderMessageFormat => reminderMessageFormat is not null);
-
         detailedHelp = CreateDetailedHelp(reminderMessageFormats);
+        ;
     }
 
     private static string CreateDetailedHelp(IEnumerable<ReminderMessageFormatAttribute> reminderMessageFormats)
     {
-        return string.Join(
-            "\n",
-            reminderMessageFormats.Select(format => $"\"{format.Pattern}\" ({format.Description})"));
+        var detailedHelpMessageBuilder = new StringBuilder("reminder formats:");
+        foreach (var format in reminderMessageFormats)
+            detailedHelpMessageBuilder.AppendLine($"\"{format.Pattern}\" ({format.Description})");
+        return detailedHelpMessageBuilder.ToString();
     }
 
     public ReminderMessageHandler(IReminderMessageParser parser)
